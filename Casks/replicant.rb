@@ -5,7 +5,7 @@ cask "replicant" do
       require "utils/github"
 
       define_method(:github_helper_token) do
-        github_token = ENV.fetch("GITHUB_TOKEN", nil)
+        github_token = ENV.fetch("HOMEBREW_GITHUB_API_TOKEN", nil)
         github_token ||= GitHub::API.credentials
 
         raise "Failed to retrieve GitHub API token" if github_token.blank?
@@ -40,7 +40,7 @@ cask "replicant" do
     end
   end
 
-  version "0.0.2"
+  version "0.0.3"
 
   on_macos do
     on_intel do
@@ -50,7 +50,7 @@ cask "replicant" do
           "Authorization: Bearer #{Utils.github_helper_token}",
           "X-GitHub-Api-Version: 2022-11-28",
         ]
-      sha256 "cae9dd8262082a52118e4ac6bd9a22521f18306607ffdc1152074b2a39d74835"
+      sha256 "da0088c910dbd8d856a4d9e9f7d564d3a373661f7a640c222b108c438e293d34"
     end
     on_arm do
       url "#{Utils.github_release_asset_url(version.to_s, "replicant_Darwin_arm64.tar.gz")}",
@@ -59,34 +59,13 @@ cask "replicant" do
           "Authorization: Bearer #{Utils.github_helper_token}",
           "X-GitHub-Api-Version: 2022-11-28",
         ]
-      sha256 "8cd94f8a14baf4f9fcdefd7d1b2648b52aaa61437479284ba584e90ceffa9d49"
-    end
-  end
-
-  on_linux do
-    on_intel do
-      url "#{Utils.github_release_asset_url(version.to_s, "replicant_Linux_x86_64.tar.gz")}",
-        header: [
-          "Accept: application/octet-stream",
-          "Authorization: Bearer #{Utils.github_helper_token}",
-          "X-GitHub-Api-Version: 2022-11-28",
-        ]
-      sha256 "e5104303d10b628c91069459f88c6a51d5abfb940e2da61c0396550192a866ea"
-    end
-    on_arm do
-      url "#{Utils.github_release_asset_url(version.to_s, "replicant_Linux_arm64.tar.gz")}",
-        header: [
-          "Accept: application/octet-stream",
-          "Authorization: Bearer #{Utils.github_helper_token}",
-          "X-GitHub-Api-Version: 2022-11-28",
-        ]
-      sha256 "1a78c7f3f8f9f90c7d559b237ec0a118bfccbfcd2aa01aff4a47e975af1ff157"
+      sha256 "974d3f579abe6dec1049bb76a404cc5752a5f1aa85613977023339d2396aa175"
     end
   end
 
   name "replicant"
   desc "TUI for proxying and matching requests to edited responses"
-  homepage "https://github.com/DavidPerezP124/homebrew-replicant"
+  homepage "https://github.com/DavidPerezP124/replicant"
 
   livecheck do
     skip "Auto-generated on release."
