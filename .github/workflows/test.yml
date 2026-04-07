@@ -10,20 +10,26 @@ jobs:
   test-bot:
     strategy:
       matrix:
-        os: [macos-15-intel, macos-26]
         include:
-          - os: ubuntu-latest
+          - os: ubuntu-22.04
             container: ghcr.io/homebrew/brew:main
+          - os: macos-15-intel
+          - os: macos-26
+
     runs-on: ${{ matrix.os }}
     container: ${{ matrix.container }}
+
     permissions:
       actions: read
       checks: read
       contents: read
       pull-requests: read
+
     steps:
+      - uses: actions/checkout@v4
+
       - name: Set up Homebrew
-        id: set-up-homebrew
+        id: setup-homebrew
         uses: Homebrew/actions/setup-homebrew@main
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -31,14 +37,12 @@ jobs:
       - name: Cache Homebrew Bundler RubyGems
         uses: actions/cache@v4
         with:
-          path: ${{ steps.set-up-homebrew.outputs.gems-path }}
-          key: ${{ matrix.os }}-rubygems-${{ steps.set-up-homebrew.outputs.gems-hash }}
+          path: ${{ steps.setup-homebrew.outputs.gems-path }}
+          key: ${{ matrix.os }}-rubygems-${{ steps.setup-homebrew.outputs.gems-hash }}
           restore-keys: ${{ matrix.os }}-rubygems-
 
       - run: brew test-bot --only-cleanup-before
-
       - run: brew test-bot --only-setup
-
       - run: brew test-bot --only-tap-syntax
 
       - run: brew test-bot --only-formulae
@@ -49,4 +53,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: bottles_${{ matrix.os }}
-          path: '*.bottle.*'
+          path: "*.bottle.*"
